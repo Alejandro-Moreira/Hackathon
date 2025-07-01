@@ -1,0 +1,960 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAM - Sistema para Emprendedores</title>
+    <link rel="icon" href="LogoGAM.jpeg" type="image/jpeg">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #5addc1 0%, #5290c2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-logo {
+            height: 60px;
+            border-radius: 12px;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+        }
+
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #184d66;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #66e6ea 0%, #4b9ca2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .calendar-day:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .calendar-day.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .time-slot {
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .time-slot:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .time-slot.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .time-slot.unavailable {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .patient-card,
+        .appointment-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .patient-card:hover,
+        .appointment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .patient-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            background: white;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #66dbea 0%, #4b9ca2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .feature-result {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #4b9ca2;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .feature-result h4 {
+            color: #4b9ca2;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e1e5e9;
+            padding-bottom: 10px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e1e5e9;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-item strong {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <img src="LogoGAM.jpeg" alt="G.A.M Logo" class="header-logo">
+                <div>
+                    <h1>G.A.M</h1>
+                    <p>Gestor - Asistente - Mentor</p>
+                </div>
+            </div>
+            <div class="profile-section">
+                <span>Bienvenido, Santiago</span>
+                <div class="profile-icon">👤</div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="showSection('mentorships',this)">🎓 Mentorias</button>
+            <button class="nav-tab" onclick="showSection('commercial-assistant',this)">🤖 Asistente Comercial</button>
+            <button class="nav-tab" onclick="showSection('reports',this)">📈 Gestor Financiero</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-size: 2.2em; color: #333;">GAM: Potencia tu emprendimiento con mentoría, finanzas y
+                    asesoría comercial con IA.</h2>
+                <p style="font-size: 1.1em; color: #555; max-width: 800px; margin: 15px auto 0;">
+                    Una solución integral para reducir la fragilidad de los negocios en Ecuador y asegurar su
+                    rentabilidad a largo plazo.
+                </p>
+            </div>
+
+            <div class="form-grid" style="align-items: start; gap: 30px; margin-bottom: 30px;">
+                <div class="patient-card" style="border-color: #f5576c;">
+                    <h3>La Problemática</h3>
+                    <p style="margin-top: 10px;">
+                        <strong>Alta fragilidad empresarial en Ecuador:</strong> El 31.17% de los emprendimientos en
+                        Ecuador cierran por falta de rentabilidad. La falta de gestión financiera adecuada y estrategias
+                        comerciales efectivas son las principales causas.
+                    </p>
+                </div>
+                <div class="patient-card" style="border-color: #4facfe;">
+                    <h3>La Solución: GAM</h3>
+                    <p style="margin-top: 10px;">
+                        GAM es una plataforma diseñada para ayudar a los emprendedores a mejorar su rentabilidad y
+                        sostenibilidad. Con tres módulos clave:
+                    </p>
+                    <ul style="list-style-position: inside; padding-left: 0; margin-top: 10px;">
+                        <li style="margin-bottom: 8px;"><strong>Mentoría Personalizada:</strong> Asesoría y recursos
+                            educativos.</li>
+                        <li style="margin-bottom: 8px;"><strong>Gestión Financiera:</strong> Herramientas para optimizar
+                            costos y flujo de caja.</li>
+                        <li style="margin-bottom: 8px;"><strong>Asesoría Comercial con IA:</strong> Recomendaciones
+                            personalizadas para optimizar ventas y visibilidad.</li>
+                    </ul>
+                </div>
+                <div class="patient-card" style="border-color: #66e6ea;">
+                    <h3>Beneficios Clave</h3>
+                    <ul style="list-style-position: inside; padding-left: 0; margin-top: 10px;">
+                        <li style="margin-bottom: 8px;">Mejora la rentabilidad y sostenibilidad de tu negocio.</li>
+                        <li style="margin-bottom: 8px;">Recibe asesoría experta en finanzas y estrategia comercial.</li>
+                        <li style="margin-bottom: 8px;">Accede a recomendaciones comerciales basadas en IA.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                style="text-align: center; margin-top: 40px; padding: 30px; background: rgba(102, 230, 234, 0.1); border-radius: 15px;">
+                <h3 style="font-size: 1.5em; color: #333;">¡Optimiza tu negocio hoy!</h3>
+                <button class="btn" style="margin-top: 15px; padding: 14px 35px; font-size: 17px;">Regístrate
+                    Gratis</button>
+            </div>
+        </div>
+        <!-- Mentorship Section -->
+        <div id="mentorships" class="content-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>🎓 Gestión de Mentorías</h2>
+                <button class="btn" onclick="openModal('mentorshipModal')">➕ Nueva Mentoría</button>
+            </div>
+
+            <input type="text" class="search-box" placeholder="🔍 Buscar por mentor, área o fecha...">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Filtrar por Área:</label>
+                    <select>
+                        <option>Todas las áreas</option>
+                        <option>Marketing Digital</option>
+                        <option>Finanzas Personales</option>
+                        <option>Emprendimiento</option>
+                        <option>Estrategia Comercial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Filtrar por Estado:</label>
+                    <select>
+                        <option>Todos los estados</option>
+                        <option>Confirmada</option>
+                        <option>Pendiente</option>
+                        <option>Cancelada</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tarjeta de mentoría 1 -->
+            <div class="appointment-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4>Ana Martínez - ID: M123456</h4>
+                        <p><strong>Marketing Digital</strong> - Mentor: Luis Ramírez</p>
+                        <p>📅 28 de Junio, 2025 - ⏰ 04:00 PM</p>
+                        <small>Tema: Estrategia de contenido para redes sociales</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="status-badge status-confirmed">Confirmada</span><br>
+                        <button class="btn btn-secondary" style="margin-top: 10px;">Unirse</button>
+                        <button class="btn" style="background: #dc3545;">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de mentoría 2 -->
+            <div class="appointment-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4>Pedro López - ID: M789012</h4>
+                        <p><strong>Finanzas Personales</strong> - Mentora: Carla Jiménez</p>
+                        <p>📅 29 de Junio, 2025 - ⏰ 11:00 AM</p>
+                        <small>Tema: Organización financiera y presupuesto mensual</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="status-badge status-pending">Pendiente</span><br>
+                        <button class="btn btn-success" style="margin-top: 10px;">Confirmar</button>
+                        <button class="btn" style="background: #dc3545;">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comercial Assistant Section -->
+        <div id="commercial-assistant" class="content-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>🤖 Asistente Comercial Inteligente</h2>
+                <button class="btn btn-success" onclick="openAIChat()">💬 Consultar a la IA</button>
+            </div>
+
+            <input type="text" class="search-box"
+                placeholder="🔍 ¿Qué quieres analizar hoy? (competencia, tendencias, cliente ideal...)">
+
+            <!-- Funcionalidades principales -->
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>📍 Análisis de Competencia Local</label>
+                    <button class="btn btn-secondary" onclick="buscarCompetencia()">Buscar negocios similares</button>
+                    <p class="small-text">Basado en ubicación, muestra precios promedio, promociones y canales más
+                        usados.</p>
+                    <div id="competencia-resultado" class="feature-result" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>📊 Tendencias del Mercado</label>
+                    <button class="btn btn-secondary" onclick="verTendencias()">Ver tendencias actuales</button>
+                    <p class="small-text">Productos o servicios que están en crecimiento. Incluye fechas clave para
+                        campañas.</p>
+                    <div id="tendencias-resultado" class="feature-result" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>🎯 Perfil del Cliente Ideal</label>
+                    <button class="btn btn-secondary" onclick="generarPerfilCliente()">Generar perfil</button>
+                    <p class="small-text">Recomendaciones personalizadas para captar nuevos clientes según tus ventas.
+                    </p>
+                    <div id="perfil-resultado" class="feature-result" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>🔮 Simulador de Escenarios Personalizados</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <textarea id="userScenario" rows="5"
+                                placeholder="Describe tu escenario... Ej: Promoción camisetas dragon 2x1"></textarea>
+                            <button class="btn" style="margin-top: 10px;" onclick="simularEscenario()">Simular</button>
+                            <p class="small-text">Proyección del impacto estimado en ventas, clientes y utilidad.</p>
+                        </div>
+                        <div id="scenarioResponse" style="flex: 1.5; min-width: 300px;">
+                            <canvas id="simulationChart" style="display: none;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asistente IA -->
+            <div id="aiChatBox"
+                style="display:none; margin-top: 30px; border: 1px solid #ccc; border-radius: 10px; padding: 20px;">
+                <h3>🧠 Asistente IA Comercial</h3>
+                <textarea id="userQuestion" rows="4"
+                    placeholder="Escribe tu pregunta, por ejemplo: ¿Qué tipo de promociones funcionan en junio?"></textarea>
+                <button class="btn btn-primary" style="margin-top: 10px;" onclick="consultarIA()">Enviar
+                    Pregunta</button>
+                <div id="aiResponse" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- Reportes Financieros Dinámicos -->
+        <div id="reports" class="content-section">
+            <h2>📁 Gestión de Documentos Financieros</h2>
+            <p>Sube tus archivos de ingresos, egresos, cotizaciones o cualquier documento relevante para tu
+                emprendimiento.</p>
+
+            <!-- Subida de archivos -->
+            <div
+                style="margin: 20px 0; border: 2px dashed #ccc; padding: 20px; border-radius: 10px; text-align: center;">
+                <input type="file" id="reportUpload" multiple />
+                <br><br>
+                <button class="btn btn-success" onclick="subirDocumento()">📤 Subir Documento</button>
+            </div>
+
+            <!-- Historial de reportes/documentos -->
+            <h3>📋 Documentos Subidos</h3>
+
+            <div class="patient-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4>Costos Operativos - Junio 2025</h4>
+                        <p>Subido el: 25/06/2025</p>
+                        <p>Tipo de archivo: Excel (.xlsx)</p>
+                        <p>Notas: Incluye pagos a proveedores y gastos fijos</p>
+                    </div>
+                    <div>
+                        <button class="btn" style="margin-top: 10px;">📥 Descargar</button>
+                        <button class="btn btn-secondary">📝 Agregar Comentario</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="patient-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4>Cotización Materias Primas - Julio 2025</h4>
+                        <p>Subido el: 26/06/2025</p>
+                        <p>Tipo de archivo: PDF</p>
+                        <p>Notas: Proveedores comparados para materias primas</p>
+                    </div>
+                    <div>
+                        <button class="btn" style="margin-top: 10px;">📥 Descargar</button>
+                        <button class="btn btn-secondary">📝 Agregar Comentario</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="patient-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4>Resumen de Ingresos - Mayo 2025</h4>
+                        <p>Subido el: 01/06/2025</p>
+                        <p>Tipo de archivo: Imagen (foto de libreta)</p>
+                        <p>Notas: Ingresos anotados manualmente por ventas en feria</p>
+                    </div>
+                    <div>
+                        <button class="btn" style="margin-top: 10px;">📥 Descargar</button>
+                        <button class="btn btn-secondary">📝 Agregar Comentario</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment Modal -->
+        <div id="appointmentModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('appointmentModal')">&times;</span>
+                <h2>📅 Agendar Nueva Cita</h2>
+
+                <div class="form-group">
+                    <label>Buscar Paciente:</label>
+                    <input type="text" placeholder="Buscar por nombre o cédula">
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Paciente:</label>
+                        <select>
+                            <option>Seleccionar paciente</option>
+                            <option>María González - 1234567890</option>
+                            <option>Carlos Rodríguez - 0987654321</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Especialidad:</label>
+                        <select>
+                            <option>Seleccionar especialidad</option>
+                            <option>Cardiología</option>
+                            <option>Dermatología</option>
+                            <option>Neurología</option>
+                            <option>Pediatría</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Médico:</label>
+                        <select>
+                            <option>Seleccionar médico</option>
+                            <option>Dr. Juan Pérez</option>
+                            <option>Dra. Ana López</option>
+                        </select>
+                    </div>
+                </div>
+
+                <script>
+                    function showSection(sectionId, clickedTab) {
+                        // Oculta todas las secciones
+                        document.querySelectorAll('.content-section').forEach(section => {
+                            section.classList.remove('active');
+                        });
+
+                        // Muestra la seleccionada
+                        document.getElementById(sectionId).classList.add('active');
+
+                        // Quita 'active' de todas las pestañas
+                        document.querySelectorAll('.nav-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+
+                        // Agrega 'active' a la pestaña clicada
+                        clickedTab.classList.add('active');
+                    }
+
+                    let simulationChartInstance = null;
+
+                    function simularEscenario() {
+                        const scenarioText = document.getElementById('userScenario').value.toLowerCase();
+                        const chartCanvas = document.getElementById('simulationChart');
+                        const scenarioResponse = document.getElementById('scenarioResponse');
+
+                        if (simulationChartInstance) {
+                            simulationChartInstance.destroy();
+                        }
+
+                        if (scenarioText.includes('promoción camisetas dragon 2x1')) {
+                            chartCanvas.style.display = 'block';
+                            const ctx = chartCanvas.getContext('2d');
+                            const data = {
+                                labels: ['Ingresos Totales', 'Ganancia Neta'],
+                                datasets: [{
+                                    label: 'Escenario Actual',
+                                    data: [1200, 800],
+                                    backgroundColor: 'rgba(75, 156, 162, 0.6)',
+                                    borderColor: 'rgba(75, 156, 162, 1)',
+                                    borderWidth: 1
+                                }, {
+                                    label: 'Con Promoción 2x1',
+                                    data: [1800, 600],
+                                    backgroundColor: 'rgba(245, 87, 108, 0.6)',
+                                    borderColor: 'rgba(245, 87, 108, 1)',
+                                    borderWidth: 1
+                                }]
+                            };
+
+                            simulationChartInstance = new Chart(ctx, {
+                                type: 'bar',
+                                data: data,
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        title: {
+                                            display: true,
+                                            text: 'Simulación: Promoción Camisetas Dragón 2x1'
+                                        },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function (context) {
+                                                    let label = context.dataset.label || '';
+                                                    if (label) { label += ': '; }
+                                                    if (context.parsed.y !== null) {
+                                                        label += new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                                    }
+                                                    return label;
+                                                }
+                                            }
+                                        }
+                                    },
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                callback: function (value) {
+                                                    return '$' + value;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                            // Clear any text message
+                            const p = scenarioResponse.querySelector('p');
+                            if (p) p.remove();
+
+                        } else {
+                            chartCanvas.style.display = 'none';
+                            // Clear previous message if it exists
+                            const p = scenarioResponse.querySelector('p');
+                            if (p) p.remove();
+                            // Add new message
+                            const message = document.createElement('p');
+                            message.textContent = 'Análisis no disponible. Introduce el escenario "Promoción camisetas dragon 2x1" para ver la simulación.';
+                            scenarioResponse.appendChild(message);
+                        }
+                    }
+
+                    // Dummy functions to prevent console errors
+                    function openAIChat() { alert('Función de Chat con IA no implementada todavía.'); }
+                    function buscarCompetencia() {
+                        const container = document.getElementById('competencia-resultado');
+                        container.style.display = 'block';
+                        container.innerHTML = `
+                            <h4>🔍 Análisis de Competencia Local (Ejemplo)</h4>
+                            <div class="result-item">
+                                <strong>Nombre:</strong> "Urbano Style EC"<br>
+                                <strong>Ubicación:</strong> Guayaquil<br>
+                                <strong>Precios:</strong> $15 - $35<br>
+                                <strong>Estrategia Clave:</strong> Fuerte presencia en Instagram, colaboraciones con influencers locales.
+                            </div>
+                            <div class="result-item">
+                                <strong>Nombre:</strong> "Quito Prints"<br>
+                                <strong>Ubicación:</strong> Quito<br>
+                                <strong>Precios:</strong> $20 - $40<br>
+                                <strong>Estrategia Clave:</strong> Enfoque en diseños personalizados y temáticos de Ecuador. Ofrece envío gratis.
+                            </div>
+                        `;
+                    }
+                    function verTendencias() {
+                        const container = document.getElementById('tendencias-resultado');
+                        container.style.display = 'block';
+                        container.innerHTML = `
+                            <h4>📊 Tendencias del Mercado (Ejemplo)</h4>
+                            <div class="result-item">
+                                <strong>Tendencia:</strong> Ropa con estampados minimalistas.<br>
+                                <strong>Crecimiento Estimado:</strong> +15% en los próximos 3 meses.<br>
+                                <strong>Fechas Clave:</strong> Ideal para campañas del Día de la Amistad.
+                            </div>
+                            <div class="result-item">
+                                <strong>Tendencia:</strong> Prendas de algodón orgánico.<br>
+                                <strong>Crecimiento Estimado:</strong> +25% (interés creciente en sostenibilidad).<br>
+                                <strong>Fechas Clave:</strong> Día de la Tierra, ferias de emprendimiento verde.
+                            </div>
+                        `;
+                    }
+                    function generarPerfilCliente() {
+                        const container = document.getElementById('perfil-resultado');
+                        container.style.display = 'block';
+                        container.innerHTML = `
+                            <h4>🎯 Perfil del Cliente Ideal (Ejemplo)</h4>
+                            <div class="result-item">
+                                <strong>Demografía:</strong> 18-30 años, residentes en zonas urbanas (Quito, Guayaquil).<br>
+                                <strong>Intereses:</strong> Cultura pop, videojuegos, música, arte digital.<br>
+                                <strong>Comportamiento Online:</strong> Activos en Instagram y TikTok. Compran online a través de dispositivos móviles.<br>
+                                <strong>Canal Recomendado:</strong> Publicidad segmentada en Instagram Reels y TikTok.
+                            </div>
+                        `;
+                    }
+                    function consultarIA() { alert('Función de consulta a IA no implementada todavía.'); }
+                    function subirDocumento() { alert('Función de subida de documento no implementada todavía.'); }
+                    function openModal(modalId) { alert(`Abrir modal: ${modalId}. Función no implementada.`); }
+                    function closeModal(modalId) { alert(`Cerrar modal: ${modalId}. Función no implementada.`); }
+
+                </script>
+
+</body>
